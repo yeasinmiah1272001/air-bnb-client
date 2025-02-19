@@ -11,7 +11,6 @@ import LoadingSpinner from "../../components/Shared/LoadingSpinner";
 const RoomDetails = () => {
   const axiosCommon = useAxiosCommmon();
   const { id } = useParams();
-  console.log("id", id);
 
   const { data: room = {}, isPending } = useQuery({
     queryKey: ["room", id],
