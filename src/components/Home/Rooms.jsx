@@ -12,14 +12,14 @@ const Rooms = () => {
 
   const [params, setParams] = useSearchParams();
   const category = params.get("category");
-  console.log("category", category);
+  // console.log("category", category);
 
   const { data: rooms = [], isPending } = useQuery({
     queryKey: ["rooms", category],
     queryFn: async () => {
       const { data } = await axiosCommon.get(`/rooms?category=${category}`);
 
-      console.log("data", data);
+      // console.log("data", data);
       return data;
     },
   });
