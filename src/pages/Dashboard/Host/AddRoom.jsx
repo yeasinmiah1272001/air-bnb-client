@@ -26,6 +26,8 @@ const AddRoom = () => {
     const title = form.title.value;
     const price = form.price.value;
     const guest = form.total_guest;
+    const formDate = dates.startDate;
+    const endDate = dates.endDate;
     const bathrooms = form.bathrooms.value;
     const description = form.description.value;
     const bedrooms = form.bedrooms.value;
@@ -44,6 +46,8 @@ const AddRoom = () => {
       category,
       title,
       price,
+      formDate,
+      endDate,
       guest,
       bathrooms,
       description,
