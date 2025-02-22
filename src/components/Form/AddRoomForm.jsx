@@ -2,10 +2,16 @@ import { useState } from "react";
 import { categories } from "../Categories/CategoriesData";
 import { DateRange } from "react-date-range";
 
-const AddRoomForm = ({ handleDate, dates }) => {
+const AddRoomForm = ({
+  handleDate,
+  dates,
+  handleFormSubmit,
+  handleImageChange,
+  selectedImage,
+}) => {
   return (
     <div className="w-full min-h-[calc(100vh-40px)] flex flex-col justify-center items-center text-gray-800 rounded-xl bg-gray-50">
-      <form>
+      <form onSubmit={handleFormSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           <div className="space-y-6">
             <div className="space-y-1 text-sm">
@@ -59,7 +65,7 @@ const AddRoomForm = ({ handleDate, dates }) => {
                 Title
               </label>
               <input
-                className="w-full px-4 py-3 text-gray-800 border border-rose-300 focus:outline-rose-500 rounded-md "
+                className="w-full px-4 py-3  border border-rose-300 focus:outline-rose-500 rounded-md "
                 name="title"
                 id="title"
                 type="text"
@@ -68,25 +74,35 @@ const AddRoomForm = ({ handleDate, dates }) => {
               />
             </div>
 
-            <div className=" p-4 bg-white w-full  m-auto rounded-lg">
-              <div className="file_upload px-5 py-3 relative border-4 border-dotted border-gray-300 rounded-lg">
-                <div className="flex flex-col w-max mx-auto text-center">
+            <div className="p-6 bg-gray-50 w-full max-w-md mx-auto rounded-xl shadow-md flex flex-col items-center space-y-4">
+              <div className="file_upload w-full px-6 py-4 relative border-2 border-dashed border-[#F6536D] rounded-lg">
+                <div className="flex flex-col items-center text-center space-y-2">
                   <label>
                     <input
-                      className="text-sm cursor-pointer w-36 hidden"
+                      className="hidden"
                       type="file"
                       name="image"
                       id="image"
                       accept="image/*"
-                      hidden
+                      onChange={handleImageChange}
                     />
-                    <div className="bg-rose-500 text-white border border-gray-300 rounded font-semibold cursor-pointer p-1 px-3 hover:bg-rose-500">
+                    <div className="bg-blue-500 text-white text-sm font-medium rounded-md px-4 py-2 cursor-pointer hover:bg-blue-600 transition duration-300 ease-in-out">
                       Upload Image
                     </div>
                   </label>
                 </div>
               </div>
+              {selectedImage && (
+                <div className="w-24 h-24 rounded-lg shadow-lg overflow-hidden">
+                  <img
+                    src={selectedImage}
+                    alt="Selected"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
             </div>
+
             <div className="flex justify-between gap-2">
               <div className="space-y-1 text-sm">
                 <label htmlFor="price" className="block text-gray-600">
