@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import AddRoomForm from "../../../components/Form/AddRoomForm";
 import useAuth from "../../../hooks/useAuth";
 import { imageUpload } from "../../../utility";
+import { useMutation } from "@tanstack/react-query";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const AddRoom = () => {
   const { user } = useAuth();
   const [selectedImage, setSelectedImage] = useState(null);
+  const axiosSecure = useAxiosSecure();
   const [dates, setDates] = useState({
     startDate: new Date(),
     endDate: null,
@@ -13,9 +16,21 @@ const AddRoom = () => {
   });
 
   const handleDate = (item) => {
-    // console.log(item);
     setDates(item.selection);
   };
+
+  const { mutateAsync } = useMutation({
+    mutationFn: async (roomData) => {
+      const { data } = await axiosSecure.post("/room", roomData);
+      return data;
+    },
+    onSuccess: () => {
+      console.log("Data saved successfully");
+    },
+    onError: (error) => {
+      console.error("Error saving data:", error);
+    },
+  });
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +40,7 @@ const AddRoom = () => {
     const category = form.category.value;
     const title = form.title.value;
     const price = form.price.value;
-    const guest = form.total_guest;
+    const guests = form.total_guest.value; // Fixed field access
     const formDate = dates.startDate;
     const endDate = dates.endDate;
     const bathrooms = form.bathrooms.value;
@@ -37,25 +52,33 @@ const AddRoom = () => {
       email: user?.email,
       image: user?.photoURL,
     };
-    const imageUrl = await imageUpload(image);
 
-    // console.log("imgeurl", imageUrl);
+    try {
+      // Upload image and get the URL
+      const imageUrl = await imageUpload(image);
+      // console.log("Image URL:", imageUrl);
 
-    const roomData = {
-      location,
-      category,
-      title,
-      price,
-      formDate,
-      endDate,
-      guest,
-      bathrooms,
-      description,
-      bedrooms,
-      host,
-      image: imageUrl,
-    };
-    console.log("formData", roomData);
+      // Prepare room data
+      const roomData = {
+        location,
+        category,
+        title,
+        price,
+        formDate,
+        endDate,
+        guests,
+        bathrooms,
+        description,
+        bedrooms,
+        host,
+        image: imageUrl,
+      };
+
+      // Save to database
+      await mutateAsync(roomData);
+    } catch (error) {
+      console.error("Error submitting form:", error.message);
+    }
   };
 
   const handleImageChange = (e) => {
