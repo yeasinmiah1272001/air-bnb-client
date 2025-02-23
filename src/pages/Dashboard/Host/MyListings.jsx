@@ -4,6 +4,7 @@ import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 import RoomDataRow from "../../../components/Dashboard/TableRows/RoomDataRow";
+import toast from "react-hot-toast";
 
 const MyListings = () => {
   const { user } = useAuth();
@@ -29,6 +30,7 @@ const MyListings = () => {
     },
     onSuccess: (data) => {
       console.log(data);
+      toast.success("deleted success");
       console.log("deleted success");
     },
     onError: () => {
