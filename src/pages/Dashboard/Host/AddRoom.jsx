@@ -4,9 +4,13 @@ import useAuth from "../../../hooks/useAuth";
 import { imageUpload } from "../../../utility";
 import { useMutation } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AddRoom = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
   const axiosSecure = useAxiosSecure();
   const [dates, setDates] = useState({
@@ -19,16 +23,19 @@ const AddRoom = () => {
     setDates(item.selection);
   };
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: async (roomData) => {
       const { data } = await axiosSecure.post("/room", roomData);
       return data;
     },
     onSuccess: () => {
       console.log("Data saved successfully");
+      toast.success("your room data added success");
+      navigate("/dashboard/my-listings");
     },
     onError: (error) => {
       console.error("Error saving data:", error);
+      toast.error(error.message);
     },
   });
 
@@ -88,6 +95,8 @@ const AddRoom = () => {
     }
   };
 
+  if (isPending) return <LoadingSpinner />;
+
   return (
     <div>
       <AddRoomForm
@@ -96,6 +105,8 @@ const AddRoom = () => {
         handleFormSubmit={handleFormSubmit}
         selectedImage={selectedImage}
         handleImageChange={handleImageChange}
+        isPending={isPending}
+        loading={loading}
       />
     </div>
   );
