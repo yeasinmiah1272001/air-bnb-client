@@ -65,12 +65,25 @@ const AuthProvider = ({ children }) => {
     return data;
   };
 
+  // saveuser databasse
+  const saveUser = async (user) => {
+    const currentUser = {
+      email: user?.email,
+      role: "guest",
+      status: "veryfied",
+    };
+    const { data } = await axios.put(`http://localhost:5000/user`, currentUser);
+    // console.log("data", data);
+    return data;
+  };
+
   // onAuthStateChange
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
         getToken(currentUser.email);
+        saveUser(currentUser);
         console.log("currentUser", currentUser);
       }
       setLoading(false);
