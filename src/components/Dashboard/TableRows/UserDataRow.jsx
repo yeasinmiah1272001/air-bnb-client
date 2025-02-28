@@ -21,7 +21,7 @@ const UserDataRow = ({ user, refetch }) => {
     onSuccess: (data) => {
       toast.success("user updated success");
       refetch();
-      console.log(data);
+      //   console.log(data);
       setIsOpen(false);
     },
   });
