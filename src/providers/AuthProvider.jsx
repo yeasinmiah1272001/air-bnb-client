@@ -49,6 +49,11 @@ const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
+  // const logOut = () => {
+  //   setLoading(true);
+  //   return signOut(auth);
+  // };
+
   const updateUserProfile = (name, photo) => {
     return updateProfile(auth.currentUser, {
       displayName: name,
@@ -62,6 +67,7 @@ const AuthProvider = ({ children }) => {
       { email },
       { withCredentials: true }
     );
+    console.log("data", data);
     return data;
   };
 
