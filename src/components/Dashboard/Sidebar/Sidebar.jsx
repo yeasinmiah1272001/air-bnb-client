@@ -7,12 +7,17 @@ import { AiOutlineBars } from "react-icons/ai";
 import { BsGraphUp } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 import { Link } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 import { MdHomeWork } from "react-icons/md";
+import GuestMenu from "./Menu/GuestMenu";
+import HostMenu from "./Menu/HostMenu";
+import AdminMenu from "./Menu/AdminMenu";
+import useRole from "../../../hooks/useRole";
 
 const Sidebar = () => {
   const { logOut } = useAuth();
   const [isActive, setActive] = useState(false);
+  const [role, isPanding] = useRole();
 
   // Sidebar Responsive Handler
   const handleToggle = () => {
@@ -85,33 +90,12 @@ const Sidebar = () => {
 
                 <span className="mx-4 font-medium">Statistics</span>
               </NavLink>
-
-              {/* Add Room */}
-              <NavLink
-                to="add-room"
-                className={({ isActive }) =>
-                  `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
-                    isActive ? "bg-gray-300  text-gray-700" : "text-gray-600"
-                  }`
-                }
-              >
-                <BsFillHouseAddFill className="w-5 h-5" />
-
-                <span className="mx-4 font-medium">Add Room</span>
-              </NavLink>
-              {/* My Listing */}
-              <NavLink
-                to="my-listings"
-                className={({ isActive }) =>
-                  `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
-                    isActive ? "bg-gray-300  text-gray-700" : "text-gray-600"
-                  }`
-                }
-              >
-                <MdHomeWork className="w-5 h-5" />
-
-                <span className="mx-4 font-medium">My Listings</span>
-              </NavLink>
+              {/* guest */}
+              {role === "guest" && <GuestMenu />}
+              {/* host */}
+              {role === "host" && <HostMenu />}
+              {/* admin */}
+              {role === "admin" && <AdminMenu />}
             </nav>
           </div>
         </div>
