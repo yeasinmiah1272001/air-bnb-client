@@ -1,12 +1,43 @@
 import { useState } from "react";
 import UpdateUserModal from "../../Modal/UpdateUserModal";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 const UserDataRow = ({ user, refetch }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user: loginUser, loading } = useAuth();
+  const axiosSecure = useAxiosSecure();
 
-  const modalHandler = (selected) => {
+  const { mutateAsync } = useMutation({
+    mutationFn: async (role) => {
+      const { data } = await axiosSecure.patch(
+        `/user/update/${user?.email}`,
+        role
+      );
+      return data;
+    },
+    onSuccess: (data) => {
+      toast.success("user updated success");
+      refetch();
+      console.log(data);
+      setIsOpen(false);
+    },
+  });
+
+  const modalHandler = async (selected) => {
     setIsOpen(false);
-    console.log("ami hote cai", selected);
+    const currentUser = {
+      email: user?.email,
+      role: selected,
+      status: "veryfied",
+    };
+    try {
+      await mutateAsync(currentUser);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <tr>
