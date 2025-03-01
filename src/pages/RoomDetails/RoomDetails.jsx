@@ -10,6 +10,7 @@ import LoadingSpinner from "../../components/Shared/LoadingSpinner";
 
 const RoomDetails = () => {
   const axiosCommon = useAxiosCommmon();
+
   const { id } = useParams();
 
   const { data: room = {}, isPending } = useQuery({
@@ -19,6 +20,7 @@ const RoomDetails = () => {
       return data;
     },
   });
+
   if (isPending) return <LoadingSpinner />;
 
   return (
