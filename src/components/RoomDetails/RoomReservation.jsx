@@ -74,8 +74,4 @@ const RoomReservation = ({ room }) => {
   );
 };
 
-RoomReservation.propTypes = {
-  room: PropTypes.object,
-};
-
 export default RoomReservation;
