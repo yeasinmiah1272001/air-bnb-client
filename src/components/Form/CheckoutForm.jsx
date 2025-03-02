@@ -1,11 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import "./CheckoutForm.css";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const CheckoutForm = ({ closeModal, bookingInfo }) => {
-  console.log(bookingInfo);
+  //   console.log(bookingInfo);
+  const [clientSecret, setClientSecret] = useState("");
+  console.log(clientSecret);
+  const axiosSecure = useAxiosSecure();
   const stripe = useStripe();
   const elements = useElements();
+
+  useEffect(() => {
+    if (bookingInfo?.price > 1) {
+      getClientSecret({ price: bookingInfo?.price });
+    }
+  }, [bookingInfo?.price]);
+
+  const getClientSecret = async (price) => {
+    const { data } = await axiosSecure.post(`/create-checkout-session`, price);
+    console.log("data", data.clientSecret);
+    setClientSecret(data?.clientSecret);
+  };
 
   const handleSubmit = async (event) => {
     // Block native form submission.
