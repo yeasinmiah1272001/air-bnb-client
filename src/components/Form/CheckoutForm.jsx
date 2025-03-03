@@ -6,21 +6,24 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 const CheckoutForm = ({ closeModal, bookingInfo }) => {
   //   console.log(bookingInfo);
   const [clientSecret, setClientSecret] = useState("");
-  console.log(clientSecret);
+  // console.log(clientSecret);
   const axiosSecure = useAxiosSecure();
   const stripe = useStripe();
   const elements = useElements();
 
   useEffect(() => {
-    if (bookingInfo?.price > 1) {
+    // fetch client secret
+    if (bookingInfo?.price && bookingInfo?.price > 1) {
       getClientSecret({ price: bookingInfo?.price });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookingInfo?.price]);
 
+  //   get clientSecret
   const getClientSecret = async (price) => {
-    const { data } = await axiosSecure.post(`/create-checkout-session`, price);
-    console.log("data", data.clientSecret);
-    setClientSecret(data?.clientSecret);
+    const { data } = await axiosSecure.post(`/create-payment-intent`, price);
+    console.log("clientSecret from server--->", data);
+    setClientSecret(data.clientSecret);
   };
 
   const handleSubmit = async (event) => {
