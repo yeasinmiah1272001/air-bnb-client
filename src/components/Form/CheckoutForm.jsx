@@ -4,6 +4,8 @@ import "./CheckoutForm.css";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 import { ImSpinner9 } from "react-icons/im";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const CheckoutForm = ({ closeModal, bookingInfo }) => {
   //   console.log(bookingInfo);
@@ -11,6 +13,7 @@ const CheckoutForm = ({ closeModal, bookingInfo }) => {
   const [clientSecret, setClientSecret] = useState();
   const [cardError, setCardError] = useState("");
   const [processing, setProcessing] = useState(false);
+  const navigate = useNavigate();
   // console.log(clientSecret);
   const axiosSecure = useAxiosSecure();
   const stripe = useStripe();
@@ -87,13 +90,26 @@ const CheckoutForm = ({ closeModal, bookingInfo }) => {
       const paymentInfo = {
         ...bookingInfo,
         transactionId: paymentIntent.id,
+        roomId: bookingInfo?._id,
         date: new Date(),
       };
+      delete paymentInfo._id;
       console.log(paymentIntent);
       console.log("payment info", paymentInfo);
       setProcessing(false);
-      //2 save payment intent booking db
-      //3 status room db
+      try {
+        //2 save payment intent booking db
+        await axiosSecure.post("/booking", paymentInfo);
+        //3 status room db
+        await axiosSecure.patch(`/room/status/${bookingInfo?._id}`, {
+          status: true,
+        });
+        closeModal();
+        toast.success("payment succesdull");
+        navigate("/dashboard/my-bookings");
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 

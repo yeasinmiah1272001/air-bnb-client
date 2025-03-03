@@ -53,7 +53,7 @@ const RoomReservation = ({ room }) => {
       </div>
       <hr />
       <div onClick={() => setIsOpen(true)} className="p-4">
-        <Button label={"Reserve"} />
+        <Button disabled={room?.booked} label={"Reserve"} />
       </div>
       <BookingModal
         isOpen={isOpen}
